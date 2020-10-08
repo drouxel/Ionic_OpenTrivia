@@ -1,30 +1,45 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { question } from '../models/question';
 
-@Injectable()
+@Injectable(
+    {
+        providedIn:"root" 
+    }
+)
 export class OpenTriviaService{
+    private sessionToken :string;
 
-    public getQuestions(nb:number, niveau:string):Promise<Array<question>>{
+    public constructor (private httpClient:HttpClient){}
+
+    public async getQuestions(nb:number, niveau:string):Promise<Array<question>>{
+        let params = new HttpParams();
+        params = params.append('token', this.sessionToken );
+        params = params.append('amount', nb.toString() );
         return new Promise((resolve, reject)=>{
-            resolve([
-                { 
-                    category: "Entertainment: Japanese Anime & Manga", 
-                    type: "multiple", 
-                    difficulty: "easy", 
-                    question: "In &quot;Fairy Tail&quot;, what is the nickname of Natsu Dragneel?", 
-                    correct_answer: "The Salamander", 
-                    incorrect_answers: ["The Dragon Slayer", "The Dragon", "The Demon"] 
-                }, 
-                { 
-                    category: "Entertainment: Video Games", 
-                    type: "boolean", 
-                    difficulty: "medium", 
-                    question: "&quot;Return to Castle Wolfenstein&quot; was the only game of the Wolfenstein series where you don&#039;t play as William &quot;B.J.&quot; Blazkowicz.", 
-                    correct_answer: "False", 
-                    incorrect_answers: ["True"] 
-                }
-            ]);
-            reject()
+            this.httpClient.get('https://opentdb.com/api.php', {params : params})
+            .toPromise()
+            .then((reponse)=>{
+                resolve(reponse['results']);
+            })
+            .catch((error) =>{
+                reject(error)
+            })
         });
+    }
+    public async getSessionToken(){
+        if(!this.sessionToken){
+            return new Promise((resolve, reject)=>{
+                this.httpClient.get('https://opentdb.com/api_token.php?command=request')
+                .toPromise()
+                .then((reponse)=>{
+                    this.sessionToken = reponse['token'];
+                    resolve()
+                })
+                .catch((error) =>{
+                    reject(error)
+                })
+            });
+        }
     }
 }

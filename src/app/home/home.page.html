@@ -42,13 +42,13 @@
       <ion-card-content>
         <div *ngFor="let reponse of questionCourante.incorrect_answers">
           <div *ngIf="isAnswered == false">
-            <ion-button (click)='clickAnswer(reponse)' color="medium"> {{reponse}} </ion-button>
+            <ion-button (click)='clickAnswer(reponse)' color="medium" [innerHTML]="reponse"> </ion-button>
           </div>
           <div *ngIf="isAnswered == true && reponse === questionCourante.correct_answer">
-            <ion-button color="success"> {{reponse}} </ion-button>
+            <ion-button color="success" [innerHTML]="reponse"></ion-button>
           </div>
           <div *ngIf="isAnswered == true && reponse !== questionCourante.correct_answer">
-            <ion-button color="danger"> {{reponse}} </ion-button>
+            <ion-button color="danger" [innerHTML]="reponse"></ion-button>
           </div>
         </div>
       </ion-card-content>

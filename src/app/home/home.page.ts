@@ -47,6 +47,7 @@ export class HomePage implements OnInit{
     alert.present();
     return;
     }
+    await this.otServ.getSessionToken();
     await this.initQuestions(this.nbQuestions, this.difficulte);
     this.modifierQuestion();
     this.isLogged = true;
@@ -90,7 +91,7 @@ export class HomePage implements OnInit{
   }
 
   private async initQuestions(nbQuestions:number, difficulte:string){
-    this.otServ.getQuestions(nbQuestions, difficulte)
+    await this.otServ.getQuestions(nbQuestions, difficulte)
     .then((resultat)=>{
       this.questions = resultat;
     })
