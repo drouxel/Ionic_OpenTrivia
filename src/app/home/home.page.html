@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Blank
+      Open Trivia
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -14,7 +14,52 @@
   </ion-header>
 
   <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <ion-list *ngIf="isLogged == false">
+      <ion-note color="danger"> {{error}} </ion-note>
+      <ion-item>
+        <ion-label position="floating">Votre Pseudo</ion-label>
+        <ion-input type="text" [(ngModel)]="pseudo" ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label >Difficulté</ion-label>
+      <ion-select [(ngModel)]="difficulte">
+        <ion-select-option value="easy" >Facile</ion-select-option>
+        <ion-select-option value="medium">Moyen</ion-select-option>
+        <ion-select-option value="hard">Difficile</ion-select-option>
+      </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-toggle  [(ngModel)]="isSave"></ion-toggle>
+        <ion-label>Sauvegarder mes informations</ion-label>
+      </ion-item>
+      <div>
+        <ion-button expand="full" (click)="commencer()">Commencer</ion-button>
+      </div>
+    </ion-list>
+    <ion-card *ngIf="isLogged == true && isOver == false">
+      <ion-card-header>Bienvenue {{pseudo}} </ion-card-header>
+      <ion-card-subtitle class="big" [innerHTML]="questionCourante.question"></ion-card-subtitle>
+      <ion-card-content>
+        <div *ngFor="let reponse of questionCourante.incorrect_answers">
+          <div *ngIf="isAnswered == false">
+            <ion-button (click)='clickAnswer(reponse)' color="medium"> {{reponse}} </ion-button>
+          </div>
+          <div *ngIf="isAnswered == true && reponse === questionCourante.correct_answer">
+            <ion-button color="success"> {{reponse}} </ion-button>
+          </div>
+          <div *ngIf="isAnswered == true && reponse !== questionCourante.correct_answer">
+            <ion-button color="danger"> {{reponse}} </ion-button>
+          </div>
+        </div>
+      </ion-card-content>
+      <ion-button *ngIf="isAnswered == true" expand="block" (click)="clickSuivant()">Question Suivante</ion-button>
+    </ion-card>
+    <ion-card *ngIf="isOver == true">
+      <ion-card-title>Vous avez obtenu {{goodAnswers/questions.length*100}}% de bonnes réponses</ion-card-title>
+      <ion-card-content>
+        <ion-progress-bar value="{{goodAnswers/questions.length}}"></ion-progress-bar>
+      </ion-card-content>
+      <ion-button expand="block" (click)=clickRestart()>Recommencer</ion-button>
+    </ion-card>
   </div>
-</ion-content>
+</ion-content>color="medium"
